@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
 function App() {
+  const [todos, setTodos] = useState<{ description: string; completed: boolean }[]>([]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ display: 'grid' }}>
+      <input
+        style={{ fontSize: '2rem', margin: '0.75rem 2rem' }}
+        type="text"
+        autoFocus
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            const target = event.target as HTMLInputElement;
+            const { value: description } = target;
+            setTodos((todos) => [...todos, { description, completed: false }]);
+            target.value = '';
+          }
+        }}
+      />
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={`${todo.description}-${index}`}>{todo.description}</li>
+        ))}
+      </ul>
     </div>
   );
 }

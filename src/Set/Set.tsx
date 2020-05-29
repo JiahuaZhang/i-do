@@ -1,18 +1,25 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { DeleteOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
 
-import Todos from './Todos';
+import Todos from './Todo/Todos';
+import { SetContext, Set as SetInterface } from './SetContext';
 
 interface Props {
-  name: string;
+  setId: number;
   dispose: () => void;
 }
 
 export const Set = (props: Props) => {
-  const [name, setName] = useState(props.name);
   const [isShowingNewTodoInput, setIsShowingNewTodoInput] = useState(true);
+  const { state, updateSet } = useContext(SetContext);
+  const currentSet = state.sets.find(({ setId }) => setId === props.setId) as SetInterface;
+  const [name, setName] = useState(currentSet.name);
+
+  useEffect(() => {
+    updateSet({ ...currentSet, name });
+  }, [name, updateSet, currentSet]);
 
   return (
     <div style={{ margin: '.5rem 0' }}>
@@ -49,7 +56,7 @@ export const Set = (props: Props) => {
         />
         <DeleteOutlined style={{ color: '#ff5722', cursor: 'pointer' }} onClick={props.dispose} />
       </header>
-      <Todos isShowingNewTodoInput={isShowingNewTodoInput} />
+      <Todos setId={props.setId} isShowingNewTodoInput={isShowingNewTodoInput} />
     </div>
   );
 };

@@ -1,28 +1,20 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useContext } from 'react';
 import { FileAddOutlined, LeftOutlined } from '@ant-design/icons';
 
 import Set from './Set';
+import { SetContext } from './SetContext';
 
 interface Props {}
 
 export const Sets = (props: Props) => {
+  const { state, addNewSet, deleteSet } = useContext(SetContext);
   const [name, setName] = useState('');
-  const [sets, setSets] = useState<{ id: number; content: JSX.Element }[]>([]);
-  const [id, setId] = useState(0);
   const [showToggleNewSet, setshowToggleNewSet] = useState(false);
 
-  const createSet = (id: number, name: string) => ({
-    id,
-    content: (
-      <Set name={name} dispose={() => setSets((values) => values.filter((v) => v.id !== id))} />
-    ),
-  });
-
   const newSet = () => {
-    setSets((values) => [...values, createSet(id, name)]);
-    setId((id) => ++id);
+    addNewSet(name);
     setName('');
     setshowToggleNewSet(false);
   };
@@ -64,7 +56,7 @@ export const Sets = (props: Props) => {
     <div style={{ margin: '.5rem auto', maxWidth: '70rem' }}>
       <NewSet
         style={{
-          display: sets.length ? 'none' : 'grid',
+          display: state.sets.length ? 'none' : 'grid',
           gridTemplateColumns: '1fr max-content',
           alignItems: 'center',
           fontSize: '2.3rem',
@@ -72,13 +64,19 @@ export const Sets = (props: Props) => {
         }}
       />
       <div>
-        {sets.map(({ id, content }) => (
-          <div key={id}>{content}</div>
+        {state.sets.map(({ setId }) => (
+          <Set
+            key={setId}
+            setId={setId}
+            dispose={() => {
+              deleteSet(setId);
+            }}
+          />
         ))}
       </div>
       <div
         style={{
-          display: sets.length ? 'grid' : 'none',
+          display: state.sets.length ? 'grid' : 'none',
           marginTop: '.25rem',
           gridTemplateColumns: 'repeat(2, max-content)',
           alignItems: 'center',

@@ -1,19 +1,22 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { FormOutlined } from '@ant-design/icons';
 
 import Todo from './Todo';
+import { SetContext, Set, Todo as TodoInterface } from '../SetContext';
 
 interface Props {
+  setId: number;
   isShowingNewTodoInput: boolean;
 }
 
 export const Todos = (props: Props) => {
+  const { state, addNewTodo } = useContext(SetContext);
   const [description, setDescription] = useState('');
-  const [id, setId] = useState(0);
-  const [todos, setTodos] = useState<{ id: number; todo: JSX.Element }[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { todos } = state.sets.find((val) => val.setId === props.setId) as Set;
 
   useEffect(() => {
     if (props.isShowingNewTodoInput) {
@@ -21,21 +24,10 @@ export const Todos = (props: Props) => {
     }
   }, [props.isShowingNewTodoInput]);
 
-  const createTodo = (id: number, description: string) => ({
-    id,
-    todo: (
-      <Todo
-        key={id}
-        description={description}
-        dispose={() => setTodos((todos) => todos.filter((todo) => todo.id !== id))}
-      />
-    ),
-  });
-
-  const newTodo = () => {
-    setTodos((todos) => [...todos, createTodo(id, description)]);
-    setId((id) => ++id);
+  const addTodo = () => {
+    addNewTodo(props.setId, { description } as TodoInterface);
     setDescription('');
+    inputRef.current?.focus();
   };
 
   return (
@@ -56,7 +48,7 @@ export const Todos = (props: Props) => {
           autoFocus
           onKeyDown={(event) => {
             if (event.key === 'Enter' && description) {
-              newTodo();
+              addTodo();
             }
           }}
           value={description}
@@ -70,7 +62,7 @@ export const Todos = (props: Props) => {
           }}
           onClick={() => {
             if (description) {
-              newTodo();
+              addTodo();
             }
           }}
         />
@@ -82,7 +74,9 @@ export const Todos = (props: Props) => {
           listStyleType: 'none',
           padding: 0,
         }}>
-        {todos.map((todo) => todo.todo)}
+        {todos.map(({ todoId }) => (
+          <Todo setId={props.setId} todoId={todoId} key={todoId} />
+        ))}
       </ul>
     </div>
   );

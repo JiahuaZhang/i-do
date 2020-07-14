@@ -2,12 +2,16 @@ import React from 'react';
 
 import Sets from './Set/Sets';
 import { GlobalSetProvider } from './Set/SetContext';
+import { Authentication } from './Authentication/Authentication';
 
 function App() {
   return (
-    <GlobalSetProvider>
-      <Sets />
-    </GlobalSetProvider>
+    <div>
+      <Authentication />
+      <GlobalSetProvider>
+        <Sets />
+      </GlobalSetProvider>
+    </div>
   );
 }
 

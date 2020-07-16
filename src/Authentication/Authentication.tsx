@@ -1,12 +1,14 @@
 /**@jsx jsx */
 import { jsx, keyframes } from '@emotion/core';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/analytics';
 import { openDB } from 'idb';
 import { GoogleOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
+
+import { UseEscape } from '../util/UseEscape';
 
 interface Props {}
 
@@ -40,6 +42,8 @@ const gradient = keyframes`
 export const Authentication = (props: Props) => {
   const [user, setUser] = useState({ displayName: '', photoURL: '' });
   const [showLogout, setShowLogout] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+  UseEscape(imageRef, () => setShowLogout(false));
 
   useEffect(() => {
     const load = async () => {
@@ -66,6 +70,7 @@ export const Authentication = (props: Props) => {
       {user.displayName ? (
         <div style={{ position: 'relative' }}>
           <img
+            ref={imageRef}
             onClick={() => {
               setShowLogout((status) => !status);
             }}

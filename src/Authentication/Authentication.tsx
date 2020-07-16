@@ -8,7 +8,7 @@ import { openDB } from 'idb';
 import { GoogleOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 
-import { UseEscape } from '../util/UseEscape';
+import { useEscape } from '../util/useEscape';
 
 interface Props {}
 
@@ -43,7 +43,7 @@ export const Authentication = (props: Props) => {
   const [user, setUser] = useState({ displayName: '', photoURL: '' });
   const [showLogout, setShowLogout] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
-  UseEscape(imageRef, () => setShowLogout(false));
+  useEscape(imageRef, () => setShowLogout(false));
 
   useEffect(() => {
     const load = async () => {

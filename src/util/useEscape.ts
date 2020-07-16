@@ -1,6 +1,6 @@
 import { useEffect, RefObject } from 'react';
 
-export const UseEscape = (ref: RefObject<HTMLElement>, triggerFn: () => void) => {
+export const useEscape = (ref: RefObject<HTMLElement>, triggerFn: () => void) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {

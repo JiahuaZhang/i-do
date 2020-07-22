@@ -1,29 +1,15 @@
 /**@jsx jsx */
 import { jsx, keyframes } from '@emotion/core';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import 'firebase/analytics';
-import { openDB } from 'idb';
 import { GoogleOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 
 import { useEscape } from '../util/useEscape';
+import { FirebaseUserContext } from './FirebaseUserContext';
 
 interface Props {}
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-};
-firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
@@ -40,25 +26,10 @@ const gradient = keyframes`
 `;
 
 export const Authentication = (props: Props) => {
-  const [user, setUser] = useState({ displayName: '', photoURL: '' });
+  const user = useContext(FirebaseUserContext);
   const [showLogout, setShowLogout] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   useEscape(imageRef, () => setShowLogout(false));
-
-  useEffect(() => {
-    const load = async () => {
-      const database = await openDB('firebaseLocalStorageDb', 1);
-      try {
-        const values = await database.getAll('firebaseLocalStorage');
-        const { displayName, photoURL } = values[0].value;
-        setUser({ displayName, photoURL });
-      } catch (error) {
-        console.info('no cached firebase user');
-      }
-    };
-
-    load();
-  }, []);
 
   return (
     <div
@@ -67,22 +38,17 @@ export const Authentication = (props: Props) => {
         justifyContent: 'end',
         '& > *': { marginRight: '.5rem', marginTop: '.5rem', cursor: 'pointer' },
       }}>
-      {user.displayName ? (
+      {user.isAuthenticated ? (
         <div style={{ position: 'relative' }}>
           <img
             ref={imageRef}
-            onClick={() => {
-              setShowLogout((status) => !status);
-            }}
+            onClick={() => setShowLogout((status) => !status)}
             src={user.photoURL}
             style={{ width: '4rem', position: 'relative', zIndex: 1 }}
             alt="user"
           />
           <motion.button
-            onClick={() => {
-              setShowLogout(false);
-              setUser({ displayName: '', photoURL: '' });
-            }}
+            onClick={() => firebase.auth().signOut()}
             initial={false}
             animate={showLogout ? 'show' : 'hide'}
             variants={{
@@ -143,19 +109,7 @@ export const Authentication = (props: Props) => {
               backgroundSize: '250% 100%',
             },
           }}
-          onClick={() => {
-            firebase
-              .auth()
-              .signInWithPopup(googleProvider)
-              .then((result) => {
-                const { user } = result;
-                if (!user || !user.displayName || !user.photoURL) {
-                  return;
-                }
-                const { displayName, photoURL } = user;
-                setUser({ displayName, photoURL });
-              });
-          }}>
+          onClick={() => firebase.auth().signInWithPopup(googleProvider)}>
           <GoogleOutlined style={{ marginRight: '.3rem' }} />
           Login with Google
         </button>

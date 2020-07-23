@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext, ReactNode } from 'react';
-import firebase from 'firebase';
 
-import 'firebase/auth';
+import firebase from '../util/firebase';
 
 interface User {
   displayName: string;

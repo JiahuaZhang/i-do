@@ -1,12 +1,11 @@
 /**@jsx jsx */
 import { jsx, keyframes } from '@emotion/core';
 import { useState, useRef, useContext } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/auth';
 import { GoogleOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 
 import { useEscape } from '../util/useEscape';
+import firebase from '../util/firebase';
 import { FirebaseUserContext } from './FirebaseUserContext';
 
 interface Props {}

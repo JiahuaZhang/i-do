@@ -13,11 +13,7 @@ export const useFirebaseUser = () => {
   const [user, setUser] = useState({} as User);
 
   useEffect(() => {
-    console.log('starting to observing firebase auth');
     return firebase.auth().onAuthStateChanged((user) => {
-      console.group('onAuthStateChanged');
-      console.log(user);
-      console.groupEnd();
       if (user) {
         const { displayName, photoURL, uid } = user;
         setUser({

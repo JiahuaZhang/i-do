@@ -14,10 +14,15 @@ export const useFirebaseUser = () => {
 
   useEffect(() => {
     return firebase.auth().onAuthStateChanged((user) => {
+      console.group('onAuthStateChanged');
+      console.log(user);
+      console.groupEnd();
       if (user) {
+        const { displayName, photoURL, uid } = user;
         setUser({
-          displayName: user?.displayName || '',
-          photoURL: user?.photoURL || '',
+          displayName,
+          photoURL,
+          uid,
           isAuthenticated: true,
         } as User);
       } else {

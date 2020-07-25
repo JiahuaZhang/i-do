@@ -108,7 +108,10 @@ export const Authentication = (props: Props) => {
               backgroundSize: '250% 100%',
             },
           }}
-          onClick={() => firebase.auth().signInWithPopup(googleProvider)}>
+          onClick={async () => {
+            const credential = await firebase.auth().signInWithPopup(googleProvider);
+            console.log({ credential });
+          }}>
           <GoogleOutlined style={{ marginRight: '.3rem' }} />
           Login with Google
         </button>

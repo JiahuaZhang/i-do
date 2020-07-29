@@ -1,4 +1,8 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import { useState, useContext, useEffect } from 'react';
+
+import { FirebaseUserContext } from '../Authentication/FirebaseUserContext';
+import { firebaseFirestore } from '../util/firebase';
+import { createGenericContext } from '../util/createGenericContext';
 
 export interface Todo {
   todoId: number;
@@ -86,18 +90,7 @@ export const useSets = () => {
   return { state, addNewSet, updateSet, deleteSet, addNewTodo, updateTodo, deleteTodo };
 };
 
-export const SetContext = createContext(
-  {} as {
-    state: State;
-    addNewSet: (name: string) => void;
-    updateSet: (set: Set) => void;
-    deleteSet: (setId: number) => void;
-    addNewTodo: (setId: number, todo: Todo) => void;
-    updateTodo: (setId: number, todo: Todo) => void;
-    deleteTodo: (setId: number, todoId: number) => void;
-  }
-);
-
-export const GlobalSetProvider = ({ children }: { children: ReactNode }) => (
-  <SetContext.Provider value={useSets()}>{children}</SetContext.Provider>
-);
+export const {
+  GenericContext: SetContext,
+  GenericContextProvider: GlobalSetProvider,
+} = createGenericContext(useSets);

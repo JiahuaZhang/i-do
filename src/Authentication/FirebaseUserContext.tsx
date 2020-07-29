@@ -1,6 +1,7 @@
-import React, { useState, useEffect, createContext, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 
 import firebase from '../util/firebase';
+import { createGenericContext } from '../util/createGenericContext';
 
 interface User {
   displayName: string;
@@ -9,7 +10,7 @@ interface User {
   uid: string;
 }
 
-export const useFirebaseUser = () => {
+const useFirebaseUser = () => {
   const [user, setUser] = useState({} as User);
 
   useEffect(() => {
@@ -31,8 +32,7 @@ export const useFirebaseUser = () => {
   return user;
 };
 
-export const FirebaseUserContext = createContext({} as User);
-
-export const GlobalFirebaseUserProvider = ({ children }: { children: ReactNode }) => (
-  <FirebaseUserContext.Provider value={useFirebaseUser()}>{children}</FirebaseUserContext.Provider>
-);
+export const {
+  GenericContext: FirebaseUserContext,
+  GenericContextProvider: GlobalFirebaseUserProvider,
+} = createGenericContext(useFirebaseUser);

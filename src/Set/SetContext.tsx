@@ -1,7 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState } from 'react';
 
-import { FirebaseUserContext } from '../Authentication/FirebaseUserContext';
-import { firebaseFirestore } from '../util/firebase';
 import { createGenericContext } from '../util/createGenericContext';
 
 export interface Todo {

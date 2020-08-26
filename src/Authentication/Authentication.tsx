@@ -1,12 +1,13 @@
 /**@jsx jsx */
 import { jsx, keyframes } from '@emotion/core';
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef } from 'react';
 import { GoogleOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 
 import { useEscape } from '../util/useEscape';
 import firebase from '../util/firebase';
-import { FirebaseUserContext } from './FirebaseUserContext';
+import { userState, usePersistUser } from '../state/user';
+import { useRecoilValue } from 'recoil';
 
 interface Props {}
 
@@ -25,10 +26,11 @@ const gradient = keyframes`
 `;
 
 export const Authentication = (props: Props) => {
-  const user = useContext(FirebaseUserContext);
+  const user = useRecoilValue(userState);
   const [showLogout, setShowLogout] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   useEscape(imageRef, () => setShowLogout(false));
+  usePersistUser();
 
   return (
     <div

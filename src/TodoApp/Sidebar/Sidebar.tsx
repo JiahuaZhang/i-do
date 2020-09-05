@@ -1,13 +1,14 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
-import { useContext } from 'react';
+import { useRecoilValue } from 'recoil';
 
-import { TodoListManagerContext } from '../Context/TodoListManagerContext';
+import { todoState } from '../../state/todo/todo';
+import { SidebarTask } from './SidebarTask';
 
 interface Props {}
 
 export const Sidebar = (props: Props) => {
-  const { todoList } = useContext(TodoListManagerContext);
+  const tasks = useRecoilValue(todoState);
 
   return (
     <aside
@@ -26,26 +27,8 @@ export const Sidebar = (props: Props) => {
           display: 'grid',
           gap: '.25rem',
         }}>
-        {todoList.map((list, index) => (
-          <li key={index}>
-            <input
-              // on change, passing argument? new key value, index
-              type="text"
-              defaultValue={list.name}
-              css={{
-                fontSize: '1.5rem',
-                background: 'transparent',
-                color: 'white',
-                border: 'none',
-                paddingLeft: '1rem',
-                ':focus': {
-                  color: 'yellow',
-                  outline: 'none',
-                  fontStyle: 'italic',
-                },
-              }}
-            />
-          </li>
+        {tasks.map((task, index) => (
+          <SidebarTask task={task} index={index} key={index} />
         ))}
       </ul>
       <section>new list</section>

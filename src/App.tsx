@@ -10,10 +10,10 @@ import { Temp } from './Temp/Temp';
 function App() {
   return (
     <RecoilRoot>
-      <Temp />
-      {/* <Authentication />
+      {/* <Temp /> */}
+      <Authentication />
       <TodoAppLayout />
-      <GlobalSetProvider>
+      {/* <GlobalSetProvider>
         <Sets />
       </GlobalSetProvider> */}
     </RecoilRoot>

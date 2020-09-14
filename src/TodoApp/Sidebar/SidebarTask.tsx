@@ -1,19 +1,22 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
 import { useEffect, useState, useRef } from 'react';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { motion, useAnimation } from 'framer-motion';
 
 import { Task, todoState } from '../../state/todo/todo';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { currentTaskIndex, currentTaskName } from '../../state/todo/currentTask';
+import { currentTaskIndex } from '../../state/todo/currentTask';
 import { useEscape } from '../../util/useEscape';
-import { EditFilled, DeleteFilled } from '@ant-design/icons';
+import { SidebarTaskDefault } from './SidebarTaskDefault';
+import { SidebarTaskFocus } from './SidebarTaskFocus';
+import { SidebarTaskEdit } from './SidebarTaskEdit';
 
 interface Props {
   task: Task;
   index: number;
 }
 
-type Status = 'default' | 'click' | 'edit';
+export type Status = 'default' | 'focus' | 'edit';
 
 export const SidebarTask = (props: Props) => {
   const { task, index } = props;
@@ -22,9 +25,9 @@ export const SidebarTask = (props: Props) => {
   const [state, setState] = useState<Status>('default');
   const [needRestoreDefault, setNeedRestoreDefault] = useState(false);
   const liRef = useRef<HTMLLIElement>(null);
-  useEscape(liRef, () => setState('default'));
-  const setCurrentTaskName = useSetRecoilState(currentTaskName);
+  const controls = useAnimation();
 
+  useEscape(liRef, () => setState('default'));
   useEffect(() => {
     if (index !== currentIndex && state !== 'default') {
       setState('default');
@@ -32,7 +35,30 @@ export const SidebarTask = (props: Props) => {
   }, [state, index, currentIndex]);
 
   return (
-    <li
+    <motion.li
+      draggable
+      onDrag={() => {
+        console.log('on drag', state);
+      }}
+      onDragStart={() => {
+        console.log('on drag start', state);
+      }}
+      onDragEnd={() => {
+        console.log('on drag end', state);
+      }}
+      onDragOver={() => {
+        console.log('on drag over', state);
+      }}
+      onDrop={() => {
+        console.log('on drop', state);
+      }}
+      onDragStartCapture={(event) => {
+        console.log('on drag start capture', state);
+        // setState('edit');
+        event.nativeEvent.stopImmediatePropagation();
+      }}
+      style={{ display: 'grid' }}
+      animate={controls}
       ref={liRef}
       onMouseMove={() => {
         if (currentIndex !== index) {
@@ -40,9 +66,9 @@ export const SidebarTask = (props: Props) => {
         }
 
         if (state === 'default') {
-          setState('click');
+          setState('focus');
           setNeedRestoreDefault(true);
-        } else if (state !== 'click') {
+        } else if (state !== 'focus') {
           setNeedRestoreDefault(false);
         }
       }}
@@ -54,12 +80,12 @@ export const SidebarTask = (props: Props) => {
       }}
       onClick={(event) => {
         if (index === currentIndex) {
-          setState('click');
+          setState('focus');
           setNeedRestoreDefault(false);
         } else {
           setCurrentIndex(index);
         }
-        event.persist();
+        event.nativeEvent.stopImmediatePropagation();
       }}
       onDoubleClick={() => {
         setState('edit');
@@ -78,57 +104,15 @@ export const SidebarTask = (props: Props) => {
           background: '#673ab74d',
         },
       }}>
-      {state === 'default' && (task.name || <span style={{ color: 'yellow' }}>task name?</span>)}
-      {state === 'click' && (
-        <div
-          css={{
-            display: 'grid',
-            gridTemplateColumns: '1fr max-content max-content',
-            alignItems: 'center',
-            gap: '.3rem',
-            'svg:focus': {
-              outline: 'none',
-            },
-          }}>
-          <span style={{ color: task.name ? '' : 'transparent' }}>
-            {task.name || 'placeholder'}
-          </span>
-          <EditFilled
-            style={{ color: '#01fff2', paddingLeft: '1rem' }}
-            onClick={(event) => {
-              event.stopPropagation();
-              event.nativeEvent.stopImmediatePropagation();
-              setState('edit');
-            }}
-          />
-          <DeleteFilled
-            style={{ color: '#ff4243' }}
-            onClick={() => {
-              setTodos((todos) => todos.filter((_, i) => i !== index));
-              // setCurrentIndex(-1);
-            }}
-          />
-        </div>
-      )}
-      {state === 'edit' && (
-        <input
-          style={{
-            border: 'none',
-            fontSize: '1.5rem',
-            outline: 'none',
-            borderRadius: 5,
-          }}
-          onClick={(event) => event.stopPropagation()}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter') {
-              setState('default');
-            }
-          }}
-          onChange={(event) => setCurrentTaskName(event.target.value)}
-          autoFocus
-          defaultValue={task.name}
-        />
-      )}
-    </li>
+      <SidebarTaskDefault taskName={task.name} isShowing={state === 'default'} />
+      <SidebarTaskFocus
+        controls={controls}
+        index={index}
+        isShowing={state === 'focus'}
+        setState={setState}
+        taskName={task.name}
+      />
+      <SidebarTaskEdit isShowing={state === 'edit'} setState={setState} taskName={task.name} />
+    </motion.li>
   );
 };

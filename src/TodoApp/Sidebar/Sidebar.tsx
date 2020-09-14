@@ -28,7 +28,7 @@ export const Sidebar = (props: Props) => {
           gap: '.25rem',
         }}>
         {tasks.map((task, index) => (
-          <SidebarTask task={task} index={index} key={index} />
+          <SidebarTask task={task} index={index} key={task.id} />
         ))}
       </ul>
       <section>new list</section>

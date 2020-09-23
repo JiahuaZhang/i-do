@@ -17,7 +17,9 @@ export const Temp = (props: Props) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: '#aa00bb',
+        background: 'linear-gradient(250deg, #7b2ff7, #f107a3)',
+        padding: 0,
+        margin: 0,
       }}>
       <Refresh onClick={() => setCount((c) => c + 1)} />
       <Example key={count} />

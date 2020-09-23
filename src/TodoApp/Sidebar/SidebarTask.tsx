@@ -1,6 +1,6 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, RefObject } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { motion, useAnimation } from 'framer-motion';
 
@@ -14,12 +14,13 @@ import { SidebarTaskEdit } from './SidebarTaskEdit';
 interface Props {
   task: Task;
   index: number;
+  forwardRef: RefObject<HTMLUListElement>;
 }
 
 export type Status = 'default' | 'focus' | 'edit';
 
 export const SidebarTask = (props: Props) => {
-  const { task, index } = props;
+  const { task, index, forwardRef } = props;
   const [currentIndex, setCurrentIndex] = useRecoilState(currentTaskIndex);
   const setTodos = useSetRecoilState(todoState);
   const [state, setState] = useState<Status>('default');
@@ -36,26 +37,33 @@ export const SidebarTask = (props: Props) => {
 
   return (
     <motion.li
-      draggable
-      onDrag={() => {
-        console.log('on drag', state);
-      }}
-      onDragStart={() => {
-        console.log('on drag start', state);
-      }}
-      onDragEnd={() => {
-        console.log('on drag end', state);
-      }}
-      onDragOver={() => {
-        console.log('on drag over', state);
-      }}
-      onDrop={() => {
-        console.log('on drop', state);
-      }}
-      onDragStartCapture={(event) => {
-        console.log('on drag start capture', state);
-        // setState('edit');
-        event.nativeEvent.stopImmediatePropagation();
+      drag="y"
+      dragConstraints={forwardRef}
+      layout
+      // onDragStart={(event, info) => {
+      // }}
+      onDragEnd={(event, info) => {
+        setTodos((todos) => {
+          const listHeight = forwardRef.current?.clientHeight;
+          if (!listHeight) return [...todos];
+
+          const itemHeight = listHeight / todos.length;
+          const deltaIndex = Math.round(info.offset.y / itemHeight);
+          let newIndex = index + deltaIndex;
+
+          if (newIndex < 0) {
+            newIndex = 0;
+          } else if (newIndex >= todos.length) {
+            newIndex = todos.length - 1;
+          }
+
+          const newTodos = [...todos];
+          const todo = newTodos.splice(index, 1)[0];
+          newTodos.splice(newIndex, 0, todo);
+          return newTodos;
+        });
+
+        console.groupEnd();
       }}
       style={{ display: 'grid' }}
       animate={controls}

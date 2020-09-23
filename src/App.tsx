@@ -13,9 +13,6 @@ function App() {
       {/* <Temp /> */}
       <Authentication />
       <TodoAppLayout />
-      {/* <GlobalSetProvider>
-        <Sets />
-      </GlobalSetProvider> */}
     </RecoilRoot>
   );
 }

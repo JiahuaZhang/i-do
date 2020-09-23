@@ -1,6 +1,7 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
 import { useRecoilValue } from 'recoil';
+import { useRef } from 'react';
 
 import { todoState } from '../../state/todo/todo';
 import { SidebarTask } from './SidebarTask';
@@ -9,6 +10,7 @@ interface Props {}
 
 export const Sidebar = (props: Props) => {
   const tasks = useRecoilValue(todoState);
+  const ulRef = useRef<HTMLUListElement>(null);
 
   return (
     <aside
@@ -19,6 +21,7 @@ export const Sidebar = (props: Props) => {
         padding: '1rem',
       }}>
       <ul
+        ref={ulRef}
         style={{
           listStyle: 'none',
           padding: 0,
@@ -28,7 +31,7 @@ export const Sidebar = (props: Props) => {
           gap: '.25rem',
         }}>
         {tasks.map((task, index) => (
-          <SidebarTask task={task} index={index} key={task.id} />
+          <SidebarTask forwardRef={ulRef} task={task} index={index} key={task.id} />
         ))}
       </ul>
       <section>new list</section>

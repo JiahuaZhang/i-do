@@ -1,12 +1,10 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
-import { useEffect, useState, useRef, RefObject } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import { motion, useAnimation } from 'framer-motion';
-
-import { Task, todoState } from '../../state/todo/todo';
+import { useEffect, useState, CSSProperties } from 'react';
+import { useRecoilState } from 'recoil';
+import { DraggableProvided } from 'react-beautiful-dnd';
+import { Task } from '../../state/todo/todo';
 import { currentTaskIndex } from '../../state/todo/currentTask';
-import { useEscape } from '../../util/useEscape';
 import { SidebarTaskDefault } from './SidebarTaskDefault';
 import { SidebarTaskFocus } from './SidebarTaskFocus';
 import { SidebarTaskEdit } from './SidebarTaskEdit';
@@ -14,60 +12,60 @@ import { SidebarTaskEdit } from './SidebarTaskEdit';
 interface Props {
   task: Task;
   index: number;
-  forwardRef: RefObject<HTMLUListElement>;
+  provided: DraggableProvided;
+  style?: CSSProperties;
+  [key: string]: any;
 }
 
 export type Status = 'default' | 'focus' | 'edit';
 
 export const SidebarTask = (props: Props) => {
-  const { task, index, forwardRef } = props;
+  const { task, index, style, provided } = props;
   const [currentIndex, setCurrentIndex] = useRecoilState(currentTaskIndex);
-  const setTodos = useSetRecoilState(todoState);
   const [state, setState] = useState<Status>('default');
   const [needRestoreDefault, setNeedRestoreDefault] = useState(false);
-  const liRef = useRef<HTMLLIElement>(null);
-  const controls = useAnimation();
+  const [isDragging, setIsDragging] = useState(false);
+  const [liHtml, setLiHtml] = useState<HTMLLIElement | null>(null);
 
-  useEscape(liRef, () => setState('default'));
   useEffect(() => {
     if (index !== currentIndex && state !== 'default') {
       setState('default');
     }
   }, [state, index, currentIndex]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (liHtml && liHtml.contains(event.target as Node)) {
+        setState('default');
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [liHtml]);
+
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setState('default');
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => document.removeEventListener('keydown', handleEscapeKey);
+  }, [liHtml]);
+
   return (
-    <motion.li
-      drag="y"
-      dragConstraints={forwardRef}
-      layout
-      // onDragStart={(event, info) => {
-      // }}
-      onDragEnd={(event, info) => {
-        setTodos((todos) => {
-          const listHeight = forwardRef.current?.clientHeight;
-          if (!listHeight) return [...todos];
-
-          const itemHeight = listHeight / todos.length;
-          const deltaIndex = Math.round(info.offset.y / itemHeight);
-          let newIndex = index + deltaIndex;
-
-          if (newIndex < 0) {
-            newIndex = 0;
-          } else if (newIndex >= todos.length) {
-            newIndex = todos.length - 1;
-          }
-
-          const newTodos = [...todos];
-          const todo = newTodos.splice(index, 1)[0];
-          newTodos.splice(newIndex, 0, todo);
-          return newTodos;
-        });
-
-        console.groupEnd();
+    <li
+      style={{ display: 'grid', ...style }}
+      ref={(ref) => {
+        provided.innerRef(ref);
+        setLiHtml(ref);
       }}
-      style={{ display: 'grid' }}
-      animate={controls}
-      ref={liRef}
+      {...provided.dragHandleProps}
+      {...provided.draggableProps}
       onMouseMove={() => {
         if (currentIndex !== index) {
           return;
@@ -90,7 +88,7 @@ export const SidebarTask = (props: Props) => {
         if (index === currentIndex) {
           setState('focus');
           setNeedRestoreDefault(false);
-        } else {
+        } else if (!isDragging) {
           setCurrentIndex(index);
         }
         event.nativeEvent.stopImmediatePropagation();
@@ -114,13 +112,12 @@ export const SidebarTask = (props: Props) => {
       }}>
       <SidebarTaskDefault taskName={task.name} isShowing={state === 'default'} />
       <SidebarTaskFocus
-        controls={controls}
         index={index}
         isShowing={state === 'focus'}
         setState={setState}
         taskName={task.name}
       />
       <SidebarTaskEdit isShowing={state === 'edit'} setState={setState} taskName={task.name} />
-    </motion.li>
+    </li>
   );
 };

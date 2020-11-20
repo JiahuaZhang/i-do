@@ -46,7 +46,7 @@ export const Authentication = (props: Props) => {
             onClick={() => setShowLogout((status) => !status)}
             src={user.photoURL}
             style={{ width: '4rem', position: 'relative', zIndex: 1 }}
-            alt="user"
+            alt='user'
           />
           <motion.button
             onClick={() => firebase.auth().signOut()}

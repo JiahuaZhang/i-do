@@ -1,5 +1,4 @@
 import React, { useContext, ReactNode, useEffect } from 'react';
-
 import { TodoListContext, TodoListContextProvider } from './TodoListContext';
 import { createGenericContext } from '../../util/createGenericContext';
 

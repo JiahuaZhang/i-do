@@ -3,8 +3,6 @@ import { jsx } from '@emotion/core';
 import { Dispatch, SetStateAction, useState, useRef } from 'react';
 import { EditFilled, CaretUpOutlined, DeleteFilled } from '@ant-design/icons';
 import { useSetRecoilState } from 'recoil';
-import { AnimationControls } from 'framer-motion';
-
 import { Status } from './SidebarTask';
 import { todoState } from '../../state/todo/todo';
 import { useEscape } from '../../util/useEscape';
@@ -14,14 +12,13 @@ interface Props {
   taskName: string;
   setState: Dispatch<SetStateAction<Status>>;
   index: number;
-  controls: AnimationControls;
 }
 
 export const SidebarTaskFocus = (props: Props) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const setTodos = useSetRecoilState(todoState);
   const ref = useRef<HTMLDivElement>(null);
-  const { isShowing, taskName, setState, index, controls } = props;
+  const { isShowing, taskName, setState, index } = props;
 
   useEscape(ref, () => setShowConfirmDelete(false));
 
@@ -79,7 +76,6 @@ export const SidebarTaskFocus = (props: Props) => {
             },
           }}
           onClick={async () => {
-            await controls.start({ x: '-100%', opacity: 0, transition: { duration: 0.3 } });
             setTodos((todos) => todos.filter((_, i) => i !== index));
           }}>
           Confirm delete

@@ -2,7 +2,7 @@
 import { jsx } from '@emotion/core';
 import { useEffect, useState, CSSProperties } from 'react';
 import { useRecoilState } from 'recoil';
-import { DraggableProvided } from 'react-beautiful-dnd';
+import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import { Task } from '../../state/todo/todo';
 import { currentTaskIndex } from '../../state/todo/currentTask';
 import { SidebarTaskDefault } from './SidebarTaskDefault';
@@ -13,6 +13,7 @@ interface Props {
   task: Task;
   index: number;
   provided: DraggableProvided;
+  snapshot: DraggableStateSnapshot;
   style?: CSSProperties;
   [key: string]: any;
 }
@@ -20,12 +21,15 @@ interface Props {
 export type Status = 'default' | 'focus' | 'edit';
 
 export const SidebarTask = (props: Props) => {
-  const { task, index, style, provided } = props;
+  const { task, index, style, provided, snapshot } = props;
   const [currentIndex, setCurrentIndex] = useRecoilState(currentTaskIndex);
   const [state, setState] = useState<Status>('default');
   const [needRestoreDefault, setNeedRestoreDefault] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const [liHtml, setLiHtml] = useState<HTMLLIElement | null>(null);
+
+  useEffect(() => {
+    if (snapshot.isDragging) setState('default');
+  }, [snapshot.isDragging]);
 
   useEffect(() => {
     if (index !== currentIndex && state !== 'default') {
@@ -88,7 +92,7 @@ export const SidebarTask = (props: Props) => {
         if (index === currentIndex) {
           setState('focus');
           setNeedRestoreDefault(false);
-        } else if (!isDragging) {
+        } else if (!snapshot.isDragging) {
           setCurrentIndex(index);
         }
         event.nativeEvent.stopImmediatePropagation();

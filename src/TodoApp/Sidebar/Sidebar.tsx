@@ -1,13 +1,15 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { currentTaskIndex } from '../../state/todo/currentTask';
 import { todoState } from '../../state/todo/todo';
 import { SidebarTask } from './SidebarTask';
 
 interface Props {}
 
 export const Sidebar = (props: Props) => {
+  const setCurrentIndex = useSetRecoilState(currentTaskIndex);
   const [tasks, setTasks] = useRecoilState(todoState);
 
   return (
@@ -19,6 +21,7 @@ export const Sidebar = (props: Props) => {
         padding: '1rem',
       }}>
       <DragDropContext
+        onDragStart={(initial) => setCurrentIndex(initial.source.index)}
         onDragEnd={(result) => {
           if (!result.destination) return;
 
@@ -34,6 +37,8 @@ export const Sidebar = (props: Props) => {
 
             return copy;
           });
+
+          setCurrentIndex(destination.index);
         }}>
         <Droppable droppableId='tasks'>
           {(provided) => (
@@ -50,7 +55,9 @@ export const Sidebar = (props: Props) => {
               }}>
               {tasks.map((task, index) => (
                 <Draggable draggableId={task.id.toString()} index={index} key={task.id}>
-                  {(p) => <SidebarTask provided={p} task={task} index={index} />}
+                  {(p, snapshot) => (
+                    <SidebarTask provided={p} snapshot={snapshot} task={task} index={index} />
+                  )}
                 </Draggable>
               ))}
               {provided.placeholder}

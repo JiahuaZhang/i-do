@@ -1,6 +1,6 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/core';
-import { useEffect, useState, CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import { Task } from '../../state/todo/todo';
@@ -14,14 +14,13 @@ interface Props {
   index: number;
   provided: DraggableProvided;
   snapshot: DraggableStateSnapshot;
-  style?: CSSProperties;
   [key: string]: any;
 }
 
 export type Status = 'default' | 'focus' | 'edit';
 
 export const SidebarTask = (props: Props) => {
-  const { task, index, style, provided, snapshot } = props;
+  const { task, index, provided, snapshot } = props;
   const [currentIndex, setCurrentIndex] = useRecoilState(currentTaskIndex);
   const [state, setState] = useState<Status>('default');
   const [needRestoreDefault, setNeedRestoreDefault] = useState(false);
@@ -63,7 +62,6 @@ export const SidebarTask = (props: Props) => {
 
   return (
     <li
-      style={{ display: 'grid', ...style }}
       ref={(ref) => {
         provided.innerRef(ref);
         setLiHtml(ref);
@@ -110,6 +108,8 @@ export const SidebarTask = (props: Props) => {
         cursor: 'pointer',
         userSelect: 'none',
         padding: '.3rem .7rem',
+        display: 'grid',
+        overflow: 'hidden',
         ':hover': {
           background: '#673ab74d',
         },

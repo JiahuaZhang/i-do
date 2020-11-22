@@ -29,6 +29,7 @@ export const SidebarTaskFocus = (props: Props) => {
         visibility: isShowing ? 'visible' : 'hidden',
         height: isShowing ? '100%' : 0,
         display: 'grid',
+        transition: 'transform 1s ease-in',
       }}>
       <div
         css={{
@@ -74,9 +75,15 @@ export const SidebarTaskFocus = (props: Props) => {
               background: 'white',
               color: 'red',
             },
+            '&:focus': {
+              outline: 'none',
+              color: 'white',
+              background: 'gray',
+            },
           }}
-          onClick={async () => {
-            setTodos((todos) => todos.filter((_, i) => i !== index));
+          onClick={() => {
+            if (ref.current) ref.current.style.transform = 'translateX(-100%)';
+            setTimeout(() => setTodos((todos) => todos.filter((_, i) => i !== index)), 1000);
           }}>
           Confirm delete
         </button>

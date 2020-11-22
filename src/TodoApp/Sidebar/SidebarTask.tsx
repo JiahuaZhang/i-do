@@ -38,7 +38,7 @@ export const SidebarTask = (props: Props) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (liHtml && liHtml.contains(event.target as Node)) {
+      if (liHtml && !liHtml.contains(event.target as Node)) {
         setState('default');
       }
     };

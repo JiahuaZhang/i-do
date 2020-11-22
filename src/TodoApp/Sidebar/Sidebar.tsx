@@ -4,6 +4,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { currentTaskIndex } from '../../state/todo/currentTask';
 import { todoState } from '../../state/todo/todo';
+import { NewTask } from './NewTask';
 import { SidebarTask } from './SidebarTask';
 
 interface Props {}
@@ -65,7 +66,7 @@ export const Sidebar = (props: Props) => {
           )}
         </Droppable>
       </DragDropContext>
-      <section>new list</section>
+      <NewTask />
     </aside>
   );
 };

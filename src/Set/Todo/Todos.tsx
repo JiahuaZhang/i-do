@@ -1,5 +1,5 @@
 /**@jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { FormOutlined } from '@ant-design/icons';
 
@@ -43,8 +43,8 @@ export const Todos = (props: Props) => {
         <input
           ref={inputRef}
           style={{ fontSize: '2rem' }}
-          type="text"
-          placeholder="Create a todo"
+          type='text'
+          placeholder='Create a todo'
           autoFocus
           onKeyDown={(event) => {
             if (event.key === 'Enter' && description) {

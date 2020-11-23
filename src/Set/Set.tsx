@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { useState, useContext, useEffect } from 'react';
 import { DeleteOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
 
@@ -45,7 +45,7 @@ export const Set = (props: Props) => {
             border: 0,
             textAlign: 'center',
           }}
-          type="text"
+          type='text'
           value={name}
           onChange={(event) => setName(event.target.value)}
           onKeyDown={(event) => {

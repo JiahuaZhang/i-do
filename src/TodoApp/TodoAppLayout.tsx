@@ -1,5 +1,5 @@
 /**@jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 
 import { Sidebar } from './Sidebar/Sidebar';
 import { TodoList } from './TodoList/TodoList';

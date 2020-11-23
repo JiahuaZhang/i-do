@@ -1,5 +1,5 @@
 /**@jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { Dispatch, SetStateAction, useState, useRef } from 'react';
 import { EditFilled, CaretUpOutlined, DeleteFilled } from '@ant-design/icons';
 import { useSetRecoilState } from 'recoil';

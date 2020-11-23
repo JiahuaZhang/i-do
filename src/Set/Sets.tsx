@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { useState, Fragment, useContext } from 'react';
 import { FileAddOutlined, LeftOutlined } from '@ant-design/icons';
 
@@ -23,8 +23,8 @@ export const Sets = (props: Props) => {
     <div {...props}>
       <input
         autoFocus
-        type="text"
-        placeholder="Create a set"
+        type='text'
+        placeholder='Create a set'
         style={{ fontSize: '2rem' }}
         onKeyDown={(event) => {
           if (event.key === 'Enter' && name) {

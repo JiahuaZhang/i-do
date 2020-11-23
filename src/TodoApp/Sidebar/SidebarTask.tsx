@@ -1,5 +1,5 @@
 /**@jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';

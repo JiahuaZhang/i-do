@@ -1,5 +1,5 @@
 /**@jsx jsx */
-import { jsx } from '@emotion/core';
+import { jsx } from '@emotion/react';
 import { useState, useContext, useEffect } from 'react';
 import { CheckSquareOutlined, BorderOutlined, DeleteOutlined } from '@ant-design/icons';
 import { SetContext, Todo as TodoInterface } from '../SetContext';
@@ -44,7 +44,7 @@ export const Todo = (props: Props) => {
           border: 0,
           '&:focus': { outline: 'none', fontStyle: 'italic' },
         }}
-        type="text"
+        type='text'
         value={description}
         onChange={(event) => {
           setDescription(event.target.value);

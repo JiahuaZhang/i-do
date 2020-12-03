@@ -19,7 +19,7 @@ export const NewTask = (props: Props) => {
 
   const createTask = () => {
     setTodo((todos) => {
-      const ids = new Array(todos.length);
+      const ids = new Array(todos.length + 1);
       todos.map((t) => (ids[t.id] = true));
       const id = ids.findIndex((id) => !id);
       const newTodos = [...todos, { name: taskName, todos: [], id }];
@@ -42,7 +42,7 @@ export const NewTask = (props: Props) => {
           style={{
             display: 'grid',
             gridTemplateColumns: 'max-content 1fr',
-            alignItems: 'end',
+            alignItems: 'center',
             gap: '.5rem',
             cursor: 'pointer',
           }}>
@@ -56,39 +56,22 @@ export const NewTask = (props: Props) => {
           <Input
             autoFocus
             onKeyDown={(event) => {
-              if (taskName && event.key === 'Enter') {
-                createTask();
+              if (event.key === 'Enter') {
+                if (!taskName) setState('default');
+                else createTask();
+              } else if (event.key === 'Escape') {
+                setTaskName('');
               }
             }}
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
             css={{
+              fontSize: '1.25rem',
               '& *': {
-                fontSize: '1.5rem',
-              },
-              '& span': {
-                display: 'grid',
-                gridTemplateColumns: '1fr max-content',
-                alignItems: 'center',
-              },
-              '& input': {
-                border: 'none',
-                borderRadius: '.25rem',
-              },
-              '& input:focus': {
-                outline: '#03a9f4 auto 1px',
+                fontSize: '1.25rem',
               },
             }}
-            addonAfter={
-              <PlusOutlined
-                onClick={() => taskName && createTask()}
-                style={{
-                  marginLeft: '.5rem',
-                  color: taskName ? 'whitesmoke' : 'gray',
-                  cursor: taskName ? 'pointer' : 'not-allowed',
-                }}
-              />
-            }
+            addonAfter={taskName && <PlusOutlined onClick={() => taskName && createTask()} />}
           />
         </div>
       )}

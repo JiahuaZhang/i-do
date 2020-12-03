@@ -14,12 +14,16 @@ export const TodoAppLayout = (props: Props) => {
     <div
       css={{
         margin: '1rem',
-        [media_query[0]]: {
-          display: 'flex',
-          '> section': { flexGrow: 1 },
+        display: 'grid',
+        [media_query[0]]: {},
+        [media_query[1]]: {
+          margin: '1rem 2rem',
+          gridTemplateColumns: 'minmax(min-content, 400px) 1fr',
         },
-        [media_query[1]]: { margin: '1rem 2rem' },
-        [media_query[2]]: { margin: '1rem 3rem' },
+        [media_query[2]]: {
+          margin: '1rem 3rem',
+          gridTemplateColumns: 'minmax(400px max-content) 1fr',
+        },
         [media_query[3]]: { margin: '1rem 4rem' },
       }}>
       <Sidebar />

@@ -60,6 +60,18 @@ export const SidebarTask = (props: Props) => {
     return () => document.removeEventListener('keydown', handleEscapeKey);
   }, [liHtml]);
 
+  useEffect(() => {
+    const toggleToEdit = (event: KeyboardEvent) => {
+      if (index === currentIndex && state !== 'edit' && event.key === 'Enter') {
+        setState('edit');
+      }
+    };
+
+    window.addEventListener('keydown', toggleToEdit);
+
+    return () => window.removeEventListener('keydown', toggleToEdit);
+  }, [currentIndex, index, state]);
+
   return (
     <li
       ref={(ref) => {
@@ -115,12 +127,7 @@ export const SidebarTask = (props: Props) => {
         },
       }}>
       <SidebarTaskDefault taskName={task.name} isShowing={state === 'default'} />
-      <SidebarTaskFocus
-        index={index}
-        isShowing={state === 'focus'}
-        setState={setState}
-        taskName={task.name}
-      />
+      <SidebarTaskFocus isShowing={state === 'focus'} setState={setState} taskName={task.name} />
       <SidebarTaskEdit isShowing={state === 'edit'} setState={setState} taskName={task.name} />
     </li>
   );

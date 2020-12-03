@@ -1,6 +1,9 @@
-import React, { useRef, useEffect, Dispatch, SetStateAction } from 'react';
-import { useSetRecoilState } from 'recoil';
-
+/**@jsx jsx */
+import { jsx } from '@emotion/react';
+import { useRef, useEffect, Dispatch, SetStateAction, useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { CheckOutlined } from '@ant-design/icons';
+import { Input } from 'antd';
 import { Status } from './SidebarTask';
 import { currentTaskName } from '../../state/todo/currentTask';
 
@@ -11,9 +14,10 @@ interface Props {
 }
 
 export const SidebarTaskEdit = (props: Props) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<Input>(null);
   const { isShowing, taskName, setState } = props;
-  const setCurrentTaskName = useSetRecoilState(currentTaskName);
+  const [currentTask, setCurrentTaskName] = useRecoilState(currentTaskName);
+  const [value, setValue] = useState(currentTask);
 
   useEffect(() => {
     if (isShowing) {
@@ -21,28 +25,51 @@ export const SidebarTaskEdit = (props: Props) => {
     }
   }, [inputRef, isShowing]);
 
+  useEffect(() => setValue(currentTask), [currentTask]);
+
   return (
     <div
       style={{
         visibility: isShowing ? 'visible' : 'hidden',
         height: isShowing ? '100%' : 0,
       }}>
-      <input
+      <Input
+        autoFocus
         ref={inputRef}
-        style={{
-          border: 'none',
-          fontSize: '1.5rem',
-          outline: 'none',
+        defaultValue={taskName}
+        onClick={(e) => e.stopPropagation()}
+        css={{
+          fontSize: '1.25rem',
           borderRadius: 5,
+          border: 'none',
+          transition: 'none',
+          '& *': { transition: 'none' },
+          '& input': { fontSize: '1.25rem', borderRadius: 5 },
         }}
-        onClick={(event) => event.stopPropagation()}
-        onKeyPress={(event) => {
+        value={value}
+        onKeyDown={(event) => {
           if (event.key === 'Enter') {
+            setCurrentTaskName(value);
             setState('default');
+            event.stopPropagation();
+          } else if (event.key === 'Escape') {
+            if (currentTask === value) {
+              event.stopPropagation();
+              setState('default');
+            }
+            setValue(currentTask);
           }
         }}
-        onChange={(event) => setCurrentTaskName(event.target.value)}
-        defaultValue={taskName}
+        onChange={(event) => setValue(event.target.value)}
+        addonAfter={
+          value && (
+            <CheckOutlined
+              onClick={() => {
+                setCurrentTaskName(value);
+              }}
+            />
+          )
+        }
       />
     </div>
   );

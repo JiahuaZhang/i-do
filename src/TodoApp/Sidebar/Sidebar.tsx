@@ -19,7 +19,7 @@ export const Sidebar = (props: Props) => {
         background: 'linear-gradient(0deg, rgba(45,0,247,0.7) 0%, rgba(106,0,244,0.6) 100%)',
         color: 'white',
         fontSize: '1.5rem',
-        padding: '1rem',
+        padding: '.75rem',
       }}>
       <DragDropContext
         onDragStart={(initial) => setCurrentIndex(initial.source.index)}

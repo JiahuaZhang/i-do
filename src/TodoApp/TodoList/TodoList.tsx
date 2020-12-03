@@ -1,13 +1,9 @@
 import React from 'react';
-import { useRecoilValue } from 'recoil';
-
-import { currentTaskName } from '../../state/todo/currentTask';
+import { TodoHeader } from './TodoHeader';
 
 interface Props {}
 
 export const TodoList = (props: Props) => {
-  const taskName = useRecoilValue(currentTaskName);
-
   return (
     <section
       style={{
@@ -15,9 +11,7 @@ export const TodoList = (props: Props) => {
         display: 'grid',
         gridTemplateRows: 'max-content 1fr',
       }}>
-      <header style={{ justifySelf: 'center', fontSize: '2.5rem', color: taskName ? '' : 'gray' }}>
-        {taskName || 'task name?'}
-      </header>
+      <TodoHeader />
       <main>showing list of todos associated with this group</main>
     </section>
   );

@@ -4,21 +4,20 @@ import { Dispatch, SetStateAction, useState, useRef } from 'react';
 import { EditFilled, CaretUpOutlined, DeleteFilled } from '@ant-design/icons';
 import { useSetRecoilState } from 'recoil';
 import { Status } from './SidebarTask';
-import { todoState } from '../../state/todo/todo';
 import { useEscape } from '../../util/useEscape';
+import { currentTask } from '../../state/todo/currentTask';
 
 interface Props {
   isShowing: boolean;
   taskName: string;
   setState: Dispatch<SetStateAction<Status>>;
-  index: number;
 }
 
 export const SidebarTaskFocus = (props: Props) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const setTodos = useSetRecoilState(todoState);
+  const setCurrentTask = useSetRecoilState(currentTask);
   const ref = useRef<HTMLDivElement>(null);
-  const { isShowing, taskName, setState, index } = props;
+  const { isShowing, taskName, setState } = props;
 
   useEscape(ref, () => setShowConfirmDelete(false));
 
@@ -29,7 +28,7 @@ export const SidebarTaskFocus = (props: Props) => {
         visibility: isShowing ? 'visible' : 'hidden',
         height: isShowing ? '100%' : 0,
         display: 'grid',
-        transition: 'transform 1s ease-in',
+        transition: 'transform .6s ease-in',
       }}>
       <div
         css={{
@@ -83,7 +82,7 @@ export const SidebarTaskFocus = (props: Props) => {
           }}
           onClick={() => {
             if (ref.current) ref.current.style.transform = 'translateX(-100%)';
-            setTimeout(() => setTodos((todos) => todos.filter((_, i) => i !== index)), 1000);
+            setTimeout(() => setCurrentTask(null), 600);
           }}>
           Confirm delete
         </button>

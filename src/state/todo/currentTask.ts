@@ -1,6 +1,5 @@
 import { atom, selector } from 'recoil';
-
-import { todoState } from './todo';
+import { Task, todoState } from './todo';
 
 export const currentTaskIndex = atom({
   key: 'currentTaskIndex',
@@ -23,3 +22,27 @@ export const currentTaskName = selector<string>({
     set(todoState, newTasks);
   },
 });
+
+export const currentTask = selector<Task | null>({
+  key: 'currentTask',
+  get: ({ get }) => {
+    const tasks = get(todoState);
+    const index = get(currentTaskIndex);
+
+    return tasks[index];
+  },
+  set: ({ get, set }, value) => {
+    const tasks = get(todoState);
+    const index = get(currentTaskIndex);
+
+    if (!value) {
+      const newTasks = tasks.filter((_, i) => i !== index);
+      set(todoState, newTasks);
+      set(currentTaskIndex, 0)
+      return;
+    }
+
+    const newTasks = tasks.map((val, i) => index === i ? (value as Task) : val);
+    set(todoState, newTasks);
+  }
+})

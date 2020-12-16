@@ -1,8 +1,7 @@
 /**@jsx jsx */
 import { jsx } from '@emotion/react';
-
 import { Sidebar } from './Sidebar/Sidebar';
-import { TodoList } from './TodoList/TodoList';
+import { TodoMain } from './TodoMain/TodoMain';
 
 interface Props {}
 
@@ -27,7 +26,7 @@ export const TodoAppLayout = (props: Props) => {
         [media_query[3]]: { margin: '1rem 4rem' },
       }}>
       <Sidebar />
-      <TodoList />
+      <TodoMain />
     </div>
   );
 };

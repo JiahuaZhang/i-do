@@ -10,7 +10,7 @@ import { useEscape } from '../../util/useEscape';
 interface Props {}
 
 export const TodoHeader = (props: Props) => {
-  const [state, setState] = useState<'default' | 'edit'>('edit');
+  const [state, setState] = useState<'default' | 'edit'>('default');
   const [taskName, setTaskName] = useRecoilState(currentTaskName);
   const setCurrentTask = useSetRecoilState(currentTask);
   const [name, setName] = useState(taskName);

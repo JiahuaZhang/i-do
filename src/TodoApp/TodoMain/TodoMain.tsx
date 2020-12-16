@@ -1,9 +1,10 @@
 import React from 'react';
 import { TodoHeader } from './TodoHeader';
+import { TodoList } from './TodoList';
 
 interface Props {}
 
-export const TodoList = (props: Props) => {
+export const TodoMain = (props: Props) => {
   return (
     <section
       style={{
@@ -12,7 +13,7 @@ export const TodoList = (props: Props) => {
         gridTemplateRows: 'max-content 1fr',
       }}>
       <TodoHeader />
-      <main>showing list of todos associated with this group</main>
+      <TodoList />
     </section>
   );
 };

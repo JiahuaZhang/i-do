@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
 export interface Todo {
+  id: number;
   description: string;
   isCompleted: boolean;
 }
@@ -12,9 +13,23 @@ export interface Task {
 }
 
 const mockTasks: Task[] = [
-  { name: '', todos: [], id: 0 },
+  {
+    name: 'example', todos: [
+      { id: 0, description: 'good good study', isCompleted: false },
+      { id: 1, description: 'day day up', isCompleted: true },
+      { id: 2, description: 'hit airplane', isCompleted: true },
+      { id: 4, description: 'pao niu', isCompleted: false },
+    ], id: 0
+  },
   { name: '9', todos: [], id: 1 },
-  { name: 'nine simple', todos: [], id: 2 },
+  {
+    name: 'nine simple', todos: [
+      { id: 0, description: 'good good study', isCompleted: false },
+      { id: 1, description: 'day day up', isCompleted: true },
+      { id: 2, description: 'hit airplane', isCompleted: true },
+      { id: 4, description: 'pao niu', isCompleted: false },
+    ], id: 2
+  },
   { name: 'nine small', todos: [], id: 3 },
   { name: 'nine nice', todos: [], id: 4 },
   { name: '9 simple', todos: [], id: 5 },
